@@ -1,0 +1,9 @@
+services:
+    -
+        class: Crustum\JsonField\PHPStan\JsonPathPropertyExtension
+        tags:
+            - phpstan.broker.propertiesClassReflectionExtension
+    -
+        class: Crustum\JsonField\PHPStan\JsonFieldAssociationPropertyVisitor
+        tags:
+            - phpstan.parser.richParserNodeVisitor

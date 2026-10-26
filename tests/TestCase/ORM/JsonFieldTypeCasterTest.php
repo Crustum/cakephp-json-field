@@ -39,7 +39,7 @@ class JsonFieldTypeCasterTest extends TestCase
         $map = JsonSchemaReader::read(ReaderArticle::class);
         $driver = ConnectionManager::get('test')->getDriver();
 
-        (new JsonFieldTypeCaster())->castEmbeds($hydrated, $map, $driver);
+        new JsonFieldTypeCaster()->castEmbeds($hydrated, $map, $driver);
 
         $profile = $hydrated->get('profile');
         $this->assertInstanceOf(ReaderProfile::class, $profile);
@@ -58,7 +58,7 @@ class JsonFieldTypeCasterTest extends TestCase
 
         $hydrated = $resultSet->current();
 
-        (new JsonFieldTypeCaster())->castEmbeds($hydrated, $map, ConnectionManager::get('test')->getDriver());
+        new JsonFieldTypeCaster()->castEmbeds($hydrated, $map, ConnectionManager::get('test')->getDriver());
 
         $this->assertIsString($hydrated->get('profile')->get('created'));
     }

@@ -70,9 +70,7 @@ class JsonFieldResultSet extends ResultSet
     private function hydrateEmbeds(EntityInterface $entity): void
     {
         $class = $entity::class;
-        if (!isset($this->embedCache[$class])) {
-            $this->embedCache[$class] = (new JsonFieldAssociationBuilder())->buildEmbeds($class);
-        }
+        $this->embedCache[$class] ??= new JsonFieldAssociationBuilder()->buildEmbeds($class);
 
         foreach ($this->embedCache[$class] as $association) {
             $raw = $this->extractRaw($entity, $association->resolvePath());
@@ -100,7 +98,7 @@ class JsonFieldResultSet extends ResultSet
             return;
         }
 
-        (new JsonFieldTypeCaster())->castEmbeds($entity, $map, $driver);
+        new JsonFieldTypeCaster()->castEmbeds($entity, $map, $driver);
     }
 
     /**

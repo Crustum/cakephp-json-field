@@ -43,23 +43,23 @@ class JsonPathTest extends TestCase
 
     public function testHasJoker(): void
     {
-        $this->assertTrue((new JsonPath('data', ['*']))->hasJoker());
-        $this->assertFalse((new JsonPath('data', ['a']))->hasJoker());
+        $this->assertTrue(new JsonPath('data', ['*'])->hasJoker());
+        $this->assertFalse(new JsonPath('data', ['a'])->hasJoker());
     }
 
     public function testToFieldPath(): void
     {
         $this->assertSame(
             'data->deep.nested.key',
-            (new JsonPath('data', ['deep', 'nested', 'key']))->toFieldPath(),
+            new JsonPath('data', ['deep', 'nested', 'key'])->toFieldPath(),
         );
         $this->assertSame(
             'data->items[*].sku',
-            (new JsonPath('data', ['items', '*', 'sku']))->toFieldPath(),
+            new JsonPath('data', ['items', '*', 'sku'])->toFieldPath(),
         );
         $this->assertSame(
             'data->items[0]',
-            (new JsonPath('data', ['items', '0']))->toFieldPath(),
+            new JsonPath('data', ['items', '0'])->toFieldPath(),
         );
     }
 }

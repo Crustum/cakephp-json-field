@@ -22,5 +22,5 @@ class Driver extends Entity
     /**
      * @var array<string, bool>
      */
-    protected array $_accessible = ['*' => true];
+    protected array $patchable = ['*' => true];
 }

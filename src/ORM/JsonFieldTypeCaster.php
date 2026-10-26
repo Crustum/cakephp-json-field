@@ -37,7 +37,7 @@ class JsonFieldTypeCaster
             return;
         }
 
-        $embeds = (new JsonFieldAssociationBuilder())->buildEmbeds($root::class);
+        $embeds = new JsonFieldAssociationBuilder()->buildEmbeds($root::class);
         foreach ($embeds as $association) {
             $embedded = $root->get($association->getProperty());
             if ($embedded === null) {

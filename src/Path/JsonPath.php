@@ -11,7 +11,7 @@ namespace Crustum\JsonField\Path;
  * column (the JSON field name) and an ordered list of nodes (path segments,
  * which may include the `*` joker or numeric indexes).
  */
-final class JsonPath
+final readonly class JsonPath
 {
     /**
      * Creates a path from its column and ordered nodes.
@@ -20,8 +20,8 @@ final class JsonPath
      * @param list<array-key> $nodes Ordered path nodes
      */
     public function __construct(
-        public readonly string $column,
-        public readonly array $nodes,
+        public string $column,
+        public array $nodes,
     ) {
     }
 

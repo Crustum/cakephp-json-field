@@ -81,7 +81,7 @@ class JsonFieldPostgresDriver extends Postgres
             $encoded = 'null';
         }
 
-        return (new FunctionExpression('CAST', ["'" . str_replace("'", "''", $encoded) . "'" => 'literal']))
+        return new FunctionExpression('CAST', ["'" . str_replace("'", "''", $encoded) . "'" => 'literal'])
             ->setConjunction(' AS')
             ->add(['JSONB' => 'literal']);
     }
@@ -108,7 +108,7 @@ class JsonFieldPostgresDriver extends Postgres
             '@>',
         );
 
-        return $negate ? (new QueryExpression())->not($comparison) : $comparison;
+        return $negate ? new QueryExpression()->not($comparison) : $comparison;
     }
 
     /**
@@ -129,7 +129,7 @@ class JsonFieldPostgresDriver extends Postgres
      */
     protected function castJsonExtractToNumeric(ExpressionInterface $field): ExpressionInterface
     {
-        return (new FunctionExpression('CAST', [$field]))
+        return new FunctionExpression('CAST', [$field])
             ->setConjunction(' AS')
             ->add(['numeric' => 'literal']);
     }
@@ -172,9 +172,9 @@ class JsonFieldPostgresDriver extends Postgres
         $extract = $this->translateJsonPath($column, $path);
         $jsonExtract = $this->translateJsonPathTyped($column, $path);
 
-        return (new QueryExpression())->or([
-            (new QueryExpression())->isNull($extract),
-            (new QueryExpression())->eq($jsonExtract, $this->castToJson(null)),
+        return new QueryExpression()->or([
+            new QueryExpression()->isNull($extract),
+            new QueryExpression()->eq($jsonExtract, $this->castToJson(null)),
         ]);
     }
 
@@ -192,9 +192,9 @@ class JsonFieldPostgresDriver extends Postgres
         $extract = $this->translateJsonPath($column, $path);
         $jsonExtract = $this->translateJsonPathTyped($column, $path);
 
-        return (new QueryExpression())->and([
-            (new QueryExpression())->isNotNull($extract),
-            (new QueryExpression())->notEq($jsonExtract, $this->castToJson(null)),
+        return new QueryExpression()->and([
+            new QueryExpression()->isNotNull($extract),
+            new QueryExpression()->notEq($jsonExtract, $this->castToJson(null)),
         ]);
     }
 

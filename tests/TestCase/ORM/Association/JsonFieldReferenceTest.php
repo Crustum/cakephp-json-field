@@ -58,7 +58,7 @@ class JsonFieldReferenceTest extends TestCase
 
     public function testBuilderProducesBelongsToAndBelongsToMany(): void
     {
-        $references = (new JsonFieldAssociationBuilder())->buildReferences(JsonFieldArticle::class);
+        $references = new JsonFieldAssociationBuilder()->buildReferences(JsonFieldArticle::class);
 
         $this->assertArrayHasKey('author', $references);
         $this->assertArrayHasKey('tags', $references);
@@ -136,7 +136,7 @@ class JsonFieldReferenceTest extends TestCase
         $this->assertArrayHasKey('tags', $references);
 
         $article = $this->table->find()->first();
-        (new JsonFieldReferenceLoader())->load([$article], $references['author']);
+        new JsonFieldReferenceLoader()->load([$article], $references['author']);
         $this->assertSame(2, $article->get('author')->get('id'));
     }
 

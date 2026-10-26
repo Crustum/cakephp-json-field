@@ -5,7 +5,7 @@ namespace Crustum\JsonField\Test\TestCase\Database;
 
 use Cake\Database\Driver;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
 use Crustum\JsonField\Database\JsonTypeMap;
 use Crustum\JsonField\Path\JsonPathParser;
@@ -94,7 +94,7 @@ class JsonTypeMapTest extends TestCase
         $map->addJsonType('data->created', 'datetime');
 
         $value = $map->castValue('data->created', '2020-01-01', JsonTypeMap::OPERATION_MARSHAL);
-        $this->assertInstanceOf(FrozenTime::class, $value);
+        $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testToDatabaseCasterRequiresDriver(): void
@@ -118,7 +118,7 @@ class JsonTypeMapTest extends TestCase
         $this->assertIsString($db);
 
         $php = $map->castValue('data->created', $db, JsonTypeMap::OPERATION_TO_PHP, $driver);
-        $this->assertInstanceOf(FrozenTime::class, $php);
+        $this->assertInstanceOf(DateTime::class, $php);
     }
 
     public function testCustomCallableCaster(): void

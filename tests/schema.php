@@ -21,7 +21,7 @@ declare(strict_types=1);
  * @return array<string, mixed>
  */
 
-$coreSchema = require dirname(__DIR__) . '/vendor/cakephp/cakephp/tests/schema.php';
+$coreSchema = require __DIR__ . '/../vendor/cakephp/cakephp/tests/schema.php';
 
 return array_merge($coreSchema, [
     'jf_articles' => [

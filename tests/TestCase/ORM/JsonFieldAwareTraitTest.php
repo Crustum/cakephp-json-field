@@ -92,7 +92,7 @@ class JsonFieldAwareTraitTest extends TestCase
         $driver = ConnectionManager::get('test')->getDriver();
         $this->assertInstanceOf(Driver::class, $driver);
 
-        $engine = (new JsonFieldEngineResolver())->engine($driver);
+        $engine = new JsonFieldEngineResolver()->engine($driver);
         $this->assertInstanceOf(JsonFieldEngineInterface::class, $engine);
     }
 

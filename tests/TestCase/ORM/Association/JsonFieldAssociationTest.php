@@ -173,7 +173,7 @@ class JsonFieldAssociationTest extends TestCase
         ]);
 
         $parent = new AssociationArticle(['id' => 1]);
-        $loaded = (new JsonEmbedLoader())->load($association, $parent, ['title' => 'Jane']);
+        $loaded = new JsonEmbedLoader()->load($association, $parent, ['title' => 'Jane']);
 
         $this->assertInstanceOf(AssociationProfile::class, $loaded);
         $this->assertSame('Jane', $loaded->get('title'));

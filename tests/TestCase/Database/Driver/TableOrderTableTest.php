@@ -48,11 +48,11 @@ class TableOrderTableTest extends TestCase
           ->clear()
           ->faker('attributes.number', 'randomNumber')
           ->faker('attributes.float', 'randomFloat', 2, 0.01, 0.05)
-          ->callable('attributes.string', fn($data, $key, $offset) => sprintf('Name%03d', $offset))
+          ->callable('attributes.string', fn($data, $key, $offset): string => sprintf('Name%03d', $offset))
           ->faker('attributes.date', 'date', 'Y-m-d H:i:s')
           ->faker('attributes.really.deep.number', 'randomNumber')
           ->faker('attributes.really.deep.float', 'randomFloat', 2, 0.01, 0.05)
-          ->callable('attributes.really.deep.string', fn($data, $key, $offset) => sprintf('Deep%03d', $offset))
+          ->callable('attributes.really.deep.string', fn($data, $key, $offset): string => sprintf('Deep%03d', $offset))
           ->faker('attributes.really.deep.date', 'date', 'Y-m-d H:i:s')
           ->generate(50);
 
@@ -70,7 +70,7 @@ class TableOrderTableTest extends TestCase
             return $value;
         };
 
-        $expected = (new Collection($data))
+        $expected = new Collection($data)
           ->sortBy($field, $sort, SORT_NATURAL)
           ->extract($field)
           ->map($normalize)

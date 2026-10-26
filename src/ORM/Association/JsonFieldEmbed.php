@@ -515,13 +515,7 @@ abstract class JsonFieldEmbed extends JsonFieldAssociation
             return true;
         }
 
-        foreach ($value as $item) {
-            if (!$item instanceof JsonEntity) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($value, fn($item): bool => $item instanceof JsonEntity);
     }
 
     /**
@@ -697,7 +691,7 @@ abstract class JsonFieldEmbed extends JsonFieldAssociation
         }
 
         if ($this->type() === self::TYPE_ONE_TO_ONE) {
-            $parent->set($this->getProperty());
+            $parent->set($this->getProperty(), null);
             $parent->setDirty($this->getProperty(), true);
 
             return;

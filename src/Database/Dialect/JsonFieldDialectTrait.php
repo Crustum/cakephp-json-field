@@ -57,10 +57,10 @@ trait JsonFieldDialectTrait
     public function transformQuery(Query $query): Query
     {
         match (true) {
-            $query instanceof SelectQuery => $this->_selectJsonFieldQueryTranslator($query),
-            $query instanceof InsertQuery => $this->_insertJsonFieldQueryTranslator($query),
-            $query instanceof UpdateQuery => $this->_updateJsonFieldQueryTranslator($query),
-            $query instanceof DeleteQuery => $this->_deleteJsonFieldQueryTranslator($query),
+            $query instanceof SelectQuery => $this->selectJsonFieldQueryTranslator($query),
+            $query instanceof InsertQuery => $this->insertJsonFieldQueryTranslator($query),
+            $query instanceof UpdateQuery => $this->updateJsonFieldQueryTranslator($query),
+            $query instanceof DeleteQuery => $this->deleteJsonFieldQueryTranslator($query),
             default => null,
         };
 
@@ -84,29 +84,29 @@ trait JsonFieldDialectTrait
     public function translateExpression(ExpressionInterface $expression, Query $query): ExpressionInterface
     {
         if ($expression instanceof ComparisonExpression) {
-            return $this->_translateComparisonExpression($expression, $query);
+            return $this->translateComparisonExpression($expression, $query);
         }
 
         if ($expression instanceof BetweenExpression) {
-            return $this->_translateBetweenExpression($expression, $query);
+            return $this->translateBetweenExpression($expression, $query);
         }
 
         if ($expression instanceof OrderByExpression) {
-            return $this->_translateOrderByExpression($expression, $query);
+            return $this->translateOrderByExpression($expression, $query);
         }
 
         if ($expression instanceof UnaryExpression) {
-            return $this->_translateUnaryExpression($expression, $query);
+            return $this->translateUnaryExpression($expression, $query);
         }
 
         if ($expression instanceof IdentifierExpression) {
-            return $this->_translateIdentifierExpression($expression, $query);
+            return $this->translateIdentifierExpression($expression, $query);
         }
 
         if ($expression instanceof QueryExpression) {
             $expression->iterateParts(function ($expr) use ($query) {
                 if (is_string($expr)) {
-                    return $this->_translateRawSQL($expr, $query);
+                    return $this->translateRawSQL($expr, $query);
                 }
 
                 if (is_array($expr)) {
@@ -118,7 +118,7 @@ trait JsonFieldDialectTrait
                         && is_string($expr['value'])
                         && str_contains($expr['value'], '->')
                     ) {
-                        $expr['value'] = $this->_translateRawSQL($expr['value'], $query);
+                        $expr['value'] = $this->translateRawSQL($expr['value'], $query);
                     } elseif (isset($expr['value']) && $expr['value'] instanceof ExpressionInterface) {
                         $expr['value'] = $this->translateExpression($expr['value'], $query);
                     }
@@ -138,7 +138,7 @@ trait JsonFieldDialectTrait
             }
 
             if (is_string($expr)) {
-                return $this->_translateRawSQL($expr, $query);
+                return $this->translateRawSQL($expr, $query);
             }
 
             if ($expr instanceof ExpressionInterface) {
@@ -161,14 +161,14 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\ExpressionInterface The translated expression.
      */
-    protected function _translateComparisonExpression(
+    protected function translateComparisonExpression(
         ComparisonExpression $expression,
         Query $query,
     ): ExpressionInterface {
         $field = $expression->getField();
 
         if ($expression instanceof TupleComparison) {
-            return $this->_translateTupleComparisonExpression($expression, $query);
+            return $this->translateTupleComparisonExpression($expression, $query);
         }
 
         if (is_string($field) && JsonPathParser::detect($field) === 0) {
@@ -264,7 +264,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\Expression\TupleComparison The translated expression.
      */
-    protected function _translateTupleComparisonExpression(
+    protected function translateTupleComparisonExpression(
         TupleComparison $expression,
         Query $query,
     ): TupleComparison {
@@ -310,13 +310,13 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\Expression\BetweenExpression The translated expression.
      */
-    protected function _translateBetweenExpression(
+    protected function translateBetweenExpression(
         BetweenExpression $expression,
         Query $query,
     ): BetweenExpression {
         $reflection = new ReflectionClass($expression);
 
-        $fromProp = $reflection->getProperty('_from');
+        $fromProp = $reflection->getProperty('from');
 
         $from = $fromProp->getValue($expression);
 
@@ -324,7 +324,7 @@ trait JsonFieldDialectTrait
 
         if (is_string($field) && JsonPathParser::detect($field) > 0) {
             $path = JsonPathParser::parse($field);
-            $toProp = $reflection->getProperty('_to');
+            $toProp = $reflection->getProperty('to');
             $to = $toProp->getValue($expression);
             $numeric = is_numeric($from) && is_numeric($to);
 
@@ -358,7 +358,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\Expression\OrderByExpression The translated expression.
      */
-    protected function _translateOrderByExpression(
+    protected function translateOrderByExpression(
         OrderByExpression $expression,
         Query $query,
     ): OrderByExpression {
@@ -404,24 +404,24 @@ trait JsonFieldDialectTrait
     /**
      * Translates a UnaryExpression (IS NULL / IS NOT NULL) for JSON paths.
      *
-     * Uses reflection to access the private `_operator` and `_value` properties
+     * Uses reflection to access the `operator` and `value` properties
      * because CakePHP's UnaryExpression does not expose public getters.
      *
      * @param \Cake\Database\Expression\UnaryExpression $expression The unary expression.
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\ExpressionInterface The translated expression.
      */
-    protected function _translateUnaryExpression(
+    protected function translateUnaryExpression(
         UnaryExpression $expression,
         Query $query,
     ): ExpressionInterface {
         $reflection = new ReflectionClass($expression);
 
-        $operatorProp = $reflection->getProperty('_operator');
+        $operatorProp = $reflection->getProperty('operator');
 
         $op = $operatorProp->getValue($expression);
 
-        $valueProp = $reflection->getProperty('_value');
+        $valueProp = $reflection->getProperty('value');
 
         $value = $valueProp->getValue($expression);
 
@@ -459,7 +459,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\Expression\IdentifierExpression The translated expression.
      */
-    protected function _translateIdentifierExpression(
+    protected function translateIdentifierExpression(
         IdentifierExpression $expression,
         Query $query,
     ): IdentifierExpression {
@@ -486,7 +486,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query being compiled.
      * @return \Cake\Database\ExpressionInterface|string The translated fragment.
      */
-    protected function _translateRawSQL(string $fragment, Query $query): string|ExpressionInterface
+    protected function translateRawSQL(string $fragment, Query $query): string|ExpressionInterface
     {
         if (!str_contains($fragment, '->')) {
             return $fragment;
@@ -638,7 +638,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query to translate.
      * @return void
      */
-    protected function _selectJsonFieldQueryTranslator(Query $query): void
+    protected function selectJsonFieldQueryTranslator(Query $query): void
     {
         if (!$query instanceof SelectQuery) {
             return;
@@ -651,7 +651,7 @@ trait JsonFieldDialectTrait
                     if ($field instanceof ExpressionInterface) {
                         $fields[$alias] = $this->translateExpression($field, $query);
                     } elseif (is_string($field) && str_contains($field, '->')) {
-                        $fields[$alias] = $this->_translateRawSQL($field, $query);
+                        $fields[$alias] = $this->translateRawSQL($field, $query);
                     } else {
                         $fields[$alias] = $field;
                     }
@@ -681,7 +681,7 @@ trait JsonFieldDialectTrait
             }
 
             if ($clause === 'order' && $part instanceof OrderByExpression) {
-                $this->_translateOrderByExpression($part, $query);
+                $this->translateOrderByExpression($part, $query);
             }
 
             if ($part instanceof ExpressionInterface) {
@@ -698,7 +698,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query\InsertQuery $query The query to translate.
      * @return void
      */
-    protected function _insertJsonFieldQueryTranslator(InsertQuery $query): void
+    protected function insertJsonFieldQueryTranslator(InsertQuery $query): void
     {
         // INSERT queries have no WHERE clause — nothing to translate.
     }
@@ -709,7 +709,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query to translate.
      * @return void
      */
-    protected function _updateJsonFieldQueryTranslator(Query $query): void
+    protected function updateJsonFieldQueryTranslator(Query $query): void
     {
         $set = $query->clause('set');
 
@@ -741,7 +741,7 @@ trait JsonFieldDialectTrait
      * @param \Cake\Database\Query $query The query to translate.
      * @return void
      */
-    protected function _deleteJsonFieldQueryTranslator(Query $query): void
+    protected function deleteJsonFieldQueryTranslator(Query $query): void
     {
         $where = $query->clause('where');
 

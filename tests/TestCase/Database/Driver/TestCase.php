@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crustum\JsonField\Test\TestCase\Database\Driver;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase as CakeTestCase;
 use Crustum\JsonField\Database\Schema\JsonSchemaReader;
@@ -54,22 +54,22 @@ abstract class TestCase extends CakeTestCase
         JsonSchemaReader::registerCaster(
             JsonObject::class,
             'attributes->callback',
-            static fn($year): FrozenTime => FrozenTime::createFromFormat('Y', (string)$year),
-            static fn(FrozenTime $time): string => (string)($time->year - 2),
+            static fn($year): DateTime => DateTime::createFromFormat('Y', (string)$year),
+            static fn(DateTime $time): string => (string)($time->year - 2),
         );
         JsonSchemaReader::registerCaster(
             JsonObject::class,
             'attributes->year',
-            static fn($year): FrozenTime => FrozenTime::createFromFormat('Y', (string)$year),
-            static fn(FrozenTime $time): int => $time->year,
+            static fn($year): DateTime => DateTime::createFromFormat('Y', (string)$year),
+            static fn(DateTime $time): int => $time->year,
         );
         JsonSchemaReader::registerCaster(
             JsonObject::class,
             'attributes->relativeYear',
-            static fn($year): FrozenTime => FrozenTime::createFromFormat('Y', (string)$year),
+            static fn($year): DateTime => DateTime::createFromFormat('Y', (string)$year),
             static function ($value, $driver = null, ?array $attributes = null): int {
                 $dt = is_string($attributes['datetime'])
-                    ? FrozenTime::createFromFormat('Y-m-d H:i:s', $attributes['datetime'])
+                    ? DateTime::createFromFormat('Y-m-d H:i:s', $attributes['datetime'])
                     : $attributes['datetime'];
 
                 return $dt->year;

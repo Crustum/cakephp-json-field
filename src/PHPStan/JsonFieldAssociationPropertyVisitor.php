@@ -7,6 +7,7 @@ use Cake\Utility\Inflector;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -99,7 +100,7 @@ class JsonFieldAssociationPropertyVisitor extends NodeVisitorAbstract
      * @param \PhpParser\Node\Attribute $attr Attribute node
      * @return array{property: string, base: string, type: string}|null
      */
-    private function extractAssociation(Node\Attribute $attr): ?array
+    private function extractAssociation(Attribute $attr): ?array
     {
         $shortName = $attr->name->getLast();
         if ($shortName !== 'JsonReference' && $shortName !== 'JsonEmbed') {

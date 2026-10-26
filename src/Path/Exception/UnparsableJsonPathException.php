@@ -15,5 +15,5 @@ class UnparsableJsonPathException extends CakeException
      *
      * @var string
      */
-    protected string $_messageTemplate = 'Unable to parse JSON path: `%s`.';
+    protected string $messageTemplate = 'Unable to parse JSON path: `%s`.';
 }

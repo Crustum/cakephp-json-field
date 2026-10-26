@@ -30,7 +30,7 @@ class TableAggregationsTest extends TestCase
           ->generate(50);
 
         $this->table->saveMany($this->table->newEntities($data));
-        $data = (new Collection($data))->countBy('attributes.string')->toArray();
+        $data = new Collection($data)->countBy('attributes.string')->toArray();
 
         $q = $this->table->find();
 
@@ -84,7 +84,7 @@ class TableAggregationsTest extends TestCase
           ->generate(50);
 
         $this->table->saveMany($this->table->newEntities($data));
-        $data = (new Collection($data))->countBy('attributes.date')->toArray();
+        $data = new Collection($data)->countBy('attributes.date')->toArray();
 
         $q = $this->table->find();
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crustum\JsonField\Test\TestCase\Database\Driver;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 
 /**
  * Faithful port of the reference `BasicInsertAndUpdateTest`.
@@ -25,7 +25,7 @@ class BasicInsertAndUpdateTest extends TestCase
      */
     protected function buildRow(): array
     {
-        $datetime = new FrozenTime('2021-01-31 22:11:30');
+        $datetime = new DateTime('2021-01-31 22:11:30');
 
         return $this->generator
             ->clear()
@@ -74,7 +74,7 @@ class BasicInsertAndUpdateTest extends TestCase
         /** @var \JfApp\Model\Entity\JsonObject $object */
         $object = $this->table->find()->where(['id' => $row['id']])->first();
         $attrs = $object->get('attributes');
-        $attrs['datetime'] = new FrozenTime('2022-01-31 22:11:30');
+        $attrs['datetime'] = new DateTime('2022-01-31 22:11:30');
         $object->set('attributes', $attrs);
         $object->set('at2', 'test');
         $this->assertNotFalse($this->table->save($object));

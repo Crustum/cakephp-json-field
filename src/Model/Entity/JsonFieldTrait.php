@@ -40,7 +40,7 @@ trait JsonFieldTrait
             return $result;
         }
 
-        $value = parent::get($property);
+        $value = &parent::get($property);
         if ($value === null && $default !== null && !$this->has($property)) {
             return $default;
         }
@@ -90,18 +90,18 @@ trait JsonFieldTrait
      * is removed from its owning container, and the owning parent is marked dirty
      * so the change routes to an atomic JSON-column write.
      *
-     * @param array<string>|string $property A field name or a `column->node` / `node@column` path.
+     * @param array<string>|string $field A field name or a `column->node` / `node@column` path.
      * @return $this
      */
-    public function unset(array|string $property)
+    public function unset(array|string $field): static
     {
-        if (!is_string($property) || ((!str_contains($property, '->') && !str_contains($property, '@')) || JsonPathParser::detect($property) === 0)) {
-            parent::unset($property);
+        if (!is_string($field) || ((!str_contains($field, '->') && !str_contains($field, '@')) || JsonPathParser::detect($field) === 0)) {
+            parent::unset($field);
 
             return $this;
         }
 
-        $parsed = JsonPathParser::parse($property);
+        $parsed = JsonPathParser::parse($field);
         $nodes = $parsed->nodes;
         $lastNode = array_pop($nodes);
         if ($lastNode === null) {
@@ -142,29 +142,61 @@ trait JsonFieldTrait
     /**
      * Sets a property or a `column->node` path against the nested tree.
      *
-     * @param array<string>|string $property A field name or a `column->node` / `node@column` path.
+     * CakePHP 6 narrowed `EntityInterface::set()` to a single field; mass
+     * assignment lives on {@see patch()}. Path keys in bulk data are handled
+     * by the {@see patch()} override below.
+     *
+     * @param string $field A field name or a `column->node` / `node@column` path.
      * @param mixed $value The value to set.
      * @param array<string, mixed> $options Options forwarded to the Entity setter.
-     * @return $this
+     * @return static
      */
-    public function set(array|string $property, mixed $value = null, array $options = [])
+    public function set(string $field, mixed $value, array $options = []): static
     {
-        if (!is_string($property)) {
-            return parent::set($property, $value, $options);
-        }
-
-        if (!str_contains($property, '->') && !str_contains($property, '@')) {
-            $result = parent::set($property, $value, $options);
+        if (!str_contains($field, '->') && !str_contains($field, '@')) {
+            $result = parent::set($field, $value, $options);
             $this->markParentDirty();
 
             return $result;
         }
 
-        if (JsonPathParser::detect($property) !== 0) {
-            return $this->setByPath($property, $value, $options);
+        if (JsonPathParser::detect($field) !== 0) {
+            return $this->setByPath($field, $value, $options);
         }
 
-        return parent::set($property, $value, $options);
+        return parent::set($field, $value, $options);
+    }
+
+    /**
+     * Mass-assigns fields, resolving `column->node` / `node@column` path keys.
+     *
+     * @param array<string, mixed> $values Map of fields or paths to values.
+     * @param array<string, mixed> $options Options forwarded to the Entity setter.
+     * @return static
+     */
+    public function patch(array $values, array $options = []): static
+    {
+        $paths = [];
+        $plain = [];
+        foreach ($values as $field => $value) {
+            $field = (string)$field;
+            if ((str_contains($field, '->') || str_contains($field, '@')) && JsonPathParser::detect($field) !== 0) {
+                $paths[$field] = $value;
+            } else {
+                $plain[$field] = $value;
+            }
+        }
+
+        if ($plain !== []) {
+            parent::patch($plain, $options);
+            $this->markParentDirty();
+        }
+
+        foreach ($paths as $path => $value) {
+            $this->setByPath($path, $value, $options);
+        }
+
+        return $this;
     }
 
     /**
@@ -335,14 +367,14 @@ trait JsonFieldTrait
         $found = true;
         $parsed = JsonPathParser::parse($path);
 
-        if (!array_key_exists($parsed->column, $this->_fields)) {
+        if (!$this->has($parsed->column)) {
             $found = false;
             $fallback = null;
 
             return $fallback;
         }
 
-        $current = &$this->_fields[$parsed->column];
+        $current = &$this->get($parsed->column);
         foreach ($parsed->nodes as $node) {
             if ($current instanceof JsonEntity) {
                 $current = &$current->get($node);

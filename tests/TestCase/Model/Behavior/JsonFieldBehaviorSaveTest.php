@@ -343,7 +343,7 @@ class JsonFieldBehaviorSaveTest extends TestCase
 
         $reloaded = $this->table->get($article->get('id'));
         $reloaded->set('chapters', []);
-        $reloaded->set('profile');
+        $reloaded->set('profile', null);
 
         $this->table->saveOrFail($reloaded);
 

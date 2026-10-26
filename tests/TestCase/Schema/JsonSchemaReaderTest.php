@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crustum\JsonField\Test\TestCase\Schema;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
 use Crustum\JsonField\Database\JsonTypeMap;
 use Crustum\JsonField\Database\Schema\JsonSchemaReader;
@@ -61,7 +61,7 @@ class JsonSchemaReaderTest extends TestCase
         $map = JsonSchemaReader::read(ReaderArticle::class);
         $value = $map->castValue('data->profile.created', '2020-01-01', JsonTypeMap::OPERATION_MARSHAL);
 
-        $this->assertInstanceOf(FrozenTime::class, $value);
+        $this->assertInstanceOf(DateTime::class, $value);
     }
 
     public function testReadDoesNotLeakEmbedTypesToOtherClasses(): void

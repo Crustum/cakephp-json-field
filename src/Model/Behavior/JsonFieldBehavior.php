@@ -46,7 +46,7 @@ class JsonFieldBehavior extends Behavior
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $defaultConfig = [
         'mergeJsonEmbeds' => false,
     ];
 
@@ -80,8 +80,8 @@ class JsonFieldBehavior extends Behavior
     {
         $entityClass = $entity::class;
 
-        $embeds = (new JsonFieldAssociationBuilder())->buildEmbeds($entityClass, $this->table());
-        $references = (new JsonFieldAssociationBuilder())->buildReferences($entityClass, $this->table());
+        $embeds = new JsonFieldAssociationBuilder()->buildEmbeds($entityClass, $this->table());
+        $references = new JsonFieldAssociationBuilder()->buildReferences($entityClass, $this->table());
         $columns = JsonSchemaReader::columns($entityClass);
         if ($columns === []) {
             return;
@@ -108,7 +108,7 @@ class JsonFieldBehavior extends Behavior
             return;
         }
 
-        $engine = (new JsonFieldEngineResolver())->engine($driver);
+        $engine = new JsonFieldEngineResolver()->engine($driver);
         $merge = (bool)$this->getConfig('mergeJsonEmbeds');
         foreach ($embeds as $assoc) {
             $assoc->applyAtomicUpdates($entity, $typeMap, $engine, $driver, $this->table(), $merge);
@@ -124,13 +124,7 @@ class JsonFieldBehavior extends Behavior
      */
     private function anyColumnDirty(EntityInterface $entity, array $columns): bool
     {
-        foreach ($columns as $column) {
-            if ($entity->isDirty($column)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($columns, fn(string $column): bool => $entity->isDirty($column));
     }
 
     /**

@@ -34,7 +34,7 @@ trait JsonFieldAwareTrait
     {
         $driver = $this->getConnection()->getDriver();
 
-        return (new JsonFieldEngineResolver())->engine($driver);
+        return new JsonFieldEngineResolver()->engine($driver);
     }
 
     /**
@@ -280,7 +280,7 @@ trait JsonFieldAwareTrait
      */
     public function jsonFieldReferences(): array
     {
-        return (new JsonFieldAssociationBuilder())->buildReferences($this->getEntityClass(), $this);
+        return new JsonFieldAssociationBuilder()->buildReferences($this->getEntityClass(), $this);
     }
 
     /**

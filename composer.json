@@ -15,19 +15,17 @@
         }
     ],
     "require": {
-        "php": ">=8.2",
-        "cakephp/cakephp": "^5.4"
+        "php": ">=8.5",
+        "cakephp/cakephp": "6.x-dev"
     },
     "require-dev": {
-        "cakedc/cakephp-phpstan": "^4.3",
-        "cakephp/cakephp-codesniffer": "^5.0",
-        "crustum/essentia": "^1.0",
+        "cakedc/cakephp-phpstan": "5.next-cake6-dev",
+        "cakephp/cakephp-codesniffer": "6.x-dev",
         "fakerphp/faker": "^1.24",
-        "phpunit/phpunit": "^10.5 || ^11.1 || ^12.5",
+        "phpunit/phpunit": "^12.5 | ^13.0",
         "mockery/mockery": "^1.6",
-        "phpstan/phpstan": "^2.2.2,<2.2.6",
-        "rector/rector": "^2.5",
-        "vierge-noire/cakephp-test-suite-light": "^3.0"
+        "phpstan/phpstan": "^2.3",
+        "rector/rector": "^2.7"
     },
     "autoload": {
         "psr-4": {

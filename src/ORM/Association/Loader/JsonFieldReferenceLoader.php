@@ -60,7 +60,7 @@ class JsonFieldReferenceLoader implements JsonFieldReferenceLoaderInterface
         $keys = $this->collectKeys($entities, $fkPath, false);
         if ($keys === []) {
             foreach ($entities as $entity) {
-                $entity->set($association->getProperty());
+                $entity->set($association->getProperty(), null);
             }
 
             return;

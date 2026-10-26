@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crustum\JsonField\Test\TestCase\Database\Driver;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Utility\Text;
 
 /**
@@ -26,7 +26,7 @@ class BasicSelectTest extends TestCase
      */
     protected function buildRow(): array
     {
-        $datetime = new FrozenTime('2021-01-31 22:11:30');
+        $datetime = new DateTime('2021-01-31 22:11:30');
 
         return $this->generator
             ->clear()
@@ -64,10 +64,10 @@ class BasicSelectTest extends TestCase
         $this->assertSame('another string', $object->get('at2->string'));
         $this->assertSame([1, 2, 3], $object->get('at2->array'));
 
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->datetime'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->datetime'));
         $this->assertSame('2021-01-31 22:11:30', $object->get('attributes->datetime')->format('Y-m-d H:i:s'));
 
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->callback'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->callback'));
         $this->assertSame(2019, $object->get('attributes->callback')->year);
     }
 
@@ -86,8 +86,8 @@ class BasicSelectTest extends TestCase
         $object = $this->table->find()->where(['id' => $row['id']])->first();
 
         $this->assertTrue($object->get('attributes->boolean'));
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->datetime'));
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->callback'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->datetime'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->callback'));
         $this->assertSame(2019, $object->get('attributes->callback')->year);
     }
 }

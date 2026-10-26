@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Crustum\JsonField\Test\TestCase\Database\Driver;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Utility\Text;
 
 /**
@@ -24,7 +24,7 @@ class TableSelectTest extends TestCase
      */
     protected function buildRow(): array
     {
-        $datetime = new FrozenTime('2021-01-31 22:11:30');
+        $datetime = new DateTime('2021-01-31 22:11:30');
 
         return $this->generator
             ->clear()
@@ -58,9 +58,9 @@ class TableSelectTest extends TestCase
         $this->assertSame(10, $object->get('attributes->int'));
         $this->assertSame(125.25, $object->get('attributes->double'));
         $this->assertEquals(2.1E-5, $object->get('attributes->scientific'));
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->datetime'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->datetime'));
         $this->assertSame('2021-01-31 22:11:30', $object->get('attributes->datetime')->i18nFormat('yyyy-MM-dd HH:mm:ss'));
-        $this->assertInstanceOf(FrozenTime::class, $object->get('attributes->callback'));
+        $this->assertInstanceOf(DateTime::class, $object->get('attributes->callback'));
         $this->assertSame(2019, $object->get('attributes->callback')->year);
         $this->assertSame(['a'], $object->get('attributes->array'));
         $this->assertSame(['a' => 'a'], $object->get('attributes->object'));

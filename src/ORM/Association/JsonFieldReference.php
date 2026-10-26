@@ -180,7 +180,7 @@ abstract class JsonFieldReference extends JsonFieldAssociation
     public function eagerLoader(): callable
     {
         return function (array $entities): void {
-            (new JsonFieldReferenceLoader())->load($entities, $this);
+            new JsonFieldReferenceLoader()->load($entities, $this);
         };
     }
 

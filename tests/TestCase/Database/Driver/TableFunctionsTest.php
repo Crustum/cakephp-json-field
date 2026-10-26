@@ -44,7 +44,7 @@ class TableFunctionsTest extends TestCase
         $q = $this->table->find();
         $q->select(['total' => $q->func()->sum('attributes->n')]);
 
-        $expected = (new Collection($data))->sumOf('attributes.n');
+        $expected = new Collection($data)->sumOf('attributes.n');
 
         $this->assertEquals($expected, $q->first()->total);
     }

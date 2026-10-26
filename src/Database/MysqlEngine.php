@@ -39,7 +39,7 @@ class MysqlEngine extends AbstractJsonFieldEngine
      */
     public function cast(mixed $value): ExpressionInterface
     {
-        return (new FunctionExpression('CAST', [json_encode($value)]))
+        return new FunctionExpression('CAST', [json_encode($value)])
             ->setConjunction(' AS')
             ->add(['JSON' => 'literal']);
     }

@@ -5,6 +5,7 @@ on:
     branches:
       - 'main'
       - '1.x'
+      - '2.x'
   pull_request:
     branches:
       - '*'
@@ -20,21 +21,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php-version: '8.2'
+          - php-version: '8.5'
             db-type: 'sqlite'
             dependencies: lowest
-          - php-version: '8.3'
-            db-type: 'sqlite'
-            dependencies: highest
-          - php-version: '8.4'
-            db-type: 'sqlite'
-            dependencies: highest
-          - php-version: '8.4'
-            db-type: 'mysql'
-            dependencies: highest
-          - php-version: '8.4'
-            db-type: 'pgsql'
-            dependencies: highest
           - php-version: '8.5'
             db-type: 'sqlite'
             dependencies: highest
@@ -107,7 +96,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.5'
         extensions: mbstring, intl
         coverage: none
 
@@ -122,6 +111,9 @@ jobs:
 
     - name: Run PHP CodeSniffer
       run: composer cs-check
+
+    - name: Run Rector Check
+      run: composer rector-check
 
     - name: Run phpstan
       run: composer stan
